@@ -7,10 +7,9 @@ import Tile from './Tile';
 
 interface GameBoardProps {
   grid: Grid;
-  onCellClick: (x: number, y: number) => void;
 }
 
-const GameBoard: React.FC<GameBoardProps> = ({ grid, onCellClick }) => {
+const GameBoard: React.FC<GameBoardProps> = ({ grid }) => {
   const tiles = grid.flat().filter(tile => tile !== null) as TileType[];
 
   return (
@@ -27,8 +26,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ grid, onCellClick }) => {
       {Array.from({ length: GRID_SIZE * GRID_SIZE }).map((_, i) => (
         <div 
           key={`bg-${i}`}
-          onClick={() => onCellClick(i % GRID_SIZE, Math.floor(i / GRID_SIZE))}
-          className="w-full h-full bg-slate-700/50 rounded-xl cursor-pointer hover:bg-slate-600/60 transition-colors"
+          className="w-full h-full bg-slate-700/50 rounded-xl"
         />
       ))}
 

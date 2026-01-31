@@ -18,6 +18,26 @@ const App: React.FC = () => {
     return max;
   };
 
+  const hasValidMoves = (grid: (Tile | null)[][]): boolean => {
+    // Check if there are empty cells
+    const empty = getEmptyCells(grid);
+    if (empty.length > 0) return true;
+
+    // Check if any adjacent tiles can be merged
+    for (let y = 0; y < GRID_SIZE; y++) {
+      for (let x = 0; x < GRID_SIZE; x++) {
+        const current = grid[y][x];
+        if (!current) continue;
+
+        // Check right
+        if (x < GRID_SIZE - 1 && grid[y][x + 1]?.value === current.value) return true;
+        // Check down
+        if (y < GRID_SIZE - 1 && grid[y + 1][x]?.value === current.value) return true;
+      }
+    }
+    return false;
+  };
+
   const generateInitialTiles = () => {
     const grid = createEmptyGrid();
     // Start with 5-8 random tiles for high immediate difficulty and randomness
@@ -142,7 +162,35 @@ const App: React.FC = () => {
       }
 
       if (moved) {
-        return { ...prev, grid, score, won };
+        // Add a random tile after successful move
+        const empty = getEmptyCells(grid);
+        if (empty.length > 0) {
+          let placed = false;
+          let attempts = 0;
+          
+          // Try to place a tile that keeps the game playable
+          while (!placed && attempts < empty.length) {
+            const { x, y } = empty[Math.floor(Math.random() * empty.length)];
+            const currentMax = getMaxTileValue(grid);
+            const randomValue = getRandomValue(currentMax);
+            
+            // Temporarily place tile and check if moves are available
+            grid[y][x] = createTile(randomValue, { x, y });
+            
+            if (hasValidMoves(grid)) {
+              placed = true;
+            } else {
+              // Remove tile and try again with a different empty cell
+              grid[y][x] = null;
+              attempts++;
+            }
+          }
+        }
+        
+        // Check if game is over (no valid moves left)
+        const isGameOver = !hasValidMoves(grid);
+        
+        return { ...prev, grid, score, won, gameOver: isGameOver };
       }
       return prev;
     });
@@ -272,27 +320,13 @@ const App: React.FC = () => {
       </div>
 
       <div className="relative flex flex-col items-center">
-        <div className="mb-4 flex items-center gap-3">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Next Blast:</span>
-          <div className={`w-14 h-14 rounded-xl flex items-center justify-center font-extrabold text-2xl shadow-xl border-2 border-white/10 transition-all duration-300 transform hover:scale-105 ${
-            TILE_COLORS[gameState.nextValue] || 'bg-slate-800'
-          }`}>
-            {gameState.nextValue}
-          </div>
-        </div>
-
         <GameBoard 
-          grid={gameState.grid} 
-          onCellClick={handleDrop}
+          grid={gameState.grid}
         />
 
         <div className="mt-6 flex flex-wrap justify-center gap-3 text-slate-400 text-[10px] font-black uppercase tracking-widest">
           <div className="flex items-center gap-2 bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-700/50">
             <Zap size={14} className="text-orange-400" />
-            <span>Tap to Drop</span>
-          </div>
-          <div className="flex items-center gap-2 bg-slate-800/50 px-3 py-1.5 rounded-full border border-slate-700/50">
-            <RefreshCw size={14} className="text-rose-400" />
             <span>Swipe to Merge</span>
           </div>
         </div>

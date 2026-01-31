@@ -1,6 +1,6 @@
 
 export const GRID_SIZE = 4;
-export const WINNING_VALUE = 65536;
+export const WINNING_VALUE = 1073741824;
 
 export const TILE_COLORS: Record<number, string> = {
   2: 'bg-slate-200 text-slate-900',
@@ -18,7 +18,21 @@ export const TILE_COLORS: Record<number, string> = {
   8192: 'bg-amber-500 text-white',
   16384: 'bg-yellow-400 text-slate-900',
   32768: 'bg-lime-500 text-slate-900',
-  65536: 'bg-red-600 text-white border-4 border-yellow-400 animate-pulse shadow-[0_0_20px_rgba(220,38,38,0.8)]',
+  65536: 'bg-green-600 text-white',
+  131072: 'bg-teal-600 text-white',
+  262144: 'bg-cyan-600 text-white',
+  524288: 'bg-blue-600 text-white',
+  1048576: 'bg-indigo-600 text-white',
+  2097152: 'bg-violet-700 text-white',
+  4194304: 'bg-purple-700 text-white',
+  8388608: 'bg-fuchsia-700 text-white',
+  16777216: 'bg-pink-700 text-white',
+  33554432: 'bg-rose-600 text-white',
+  67108864: 'bg-red-600 text-white',
+  134217728: 'bg-orange-600 text-white',
+  268435456: 'bg-amber-600 text-white',
+  536870912: 'bg-yellow-500 text-slate-900',
+  1073741824: 'bg-yellow-300 text-slate-900 border-4 border-yellow-600 animate-pulse shadow-[0_0_30px_rgba(253,224,71,0.8)]',
 };
 
 /**
